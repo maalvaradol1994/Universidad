@@ -5,23 +5,40 @@ using Universidad.Dominio.Repositorios;
 
 namespace Universidad.Aplicacion.Caracteristicas.Estudiantes.Manejadores
 {
-    public class RegistrarEstudianteManejador(IEstudianteRepositorio estudianteRepositorio, IUsuarioRepositorio usuarioRepositorio): IRequestHandler<RegistrarEstudianteComando, int>
+    public class RegistrarEstudianteManejador(
+        IEstudianteRepositorio estudianteRepositorio,
+        IUsuarioRepositorio usuarioRepositorio,
+        IProfesorRepositorio profesorRepositorio) : IRequestHandler<RegistrarEstudianteComando, int>
     {
         public async Task<int> Handle(RegistrarEstudianteComando request, CancellationToken cancellationToken)
         {
-
-            int? usuarioId = await usuarioRepositorio.AgregarUsuario(new Usuario(request.Correo, request.Nombre, request.Identificacion, request.Clave));
+            int nuevoUsuarioId = 0;
+            int? usuarioId = await usuarioRepositorio.AgregarUsuario(new Usuario(
+                request.Correo, 
+                request.Nombre, 
+                request.Identificacion, 
+                request.Clave,
+                request.Rol));
 
             if( usuarioId == null)
             {
                 throw new Exception("Error almacenando el usuario");
             }
 
-            Estudiante nuevoEstudiante = new(request.Nombre, request.Correo, request.Clave, request.Identificacion, usuarioId ?? 0);
-            await estudianteRepositorio.AgregarEstudiante(nuevoEstudiante);
+            if( request.Rol == "Estudiante")
+            {
+                Estudiante nuevoEstudiante = new(request.Nombre, request.Correo, request.Clave, request.Identificacion, usuarioId ?? 0);
+                await estudianteRepositorio.AgregarEstudiante(nuevoEstudiante);
+                nuevoUsuarioId = nuevoEstudiante.Id;  
+            }
+            else if(request.Rol == "Profesor")
+            {
+                Profesor nuevoProfesor = new(request.Nombre, request.Identificacion, usuarioId ?? 0);
+                await profesorRepositorio.AgregarProfesor(nuevoProfesor);
+                nuevoUsuarioId = nuevoProfesor.Id;
+            }
 
-            return nuevoEstudiante.Id;
-
+            return nuevoUsuarioId;
         }
     }
 }

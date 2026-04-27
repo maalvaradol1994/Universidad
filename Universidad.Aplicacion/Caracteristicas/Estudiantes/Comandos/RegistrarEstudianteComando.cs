@@ -2,5 +2,5 @@
 
 namespace Universidad.Aplicacion.Caracteristicas.Estudiantes.Comandos
 {
-    public record RegistrarEstudianteComando(string Nombre, string Correo, string Clave, string Identificacion) : IRequest<int>;
+    public record RegistrarEstudianteComando(string Nombre, string Correo, string Clave, string Identificacion, string Rol) : IRequest<int>;
 }

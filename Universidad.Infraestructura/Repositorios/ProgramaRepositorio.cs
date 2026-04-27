@@ -7,22 +7,22 @@ namespace Universidad.Infraestructura.Repositorios
 {
     public class ProgramaRepositorio(UniversidadContexto contexto) : IProgramaRepositorio
     {
-        public async Task<List<Programa>> ObtenerTodos()
+        public async Task<List<Universidad.Dominio.Entidades.Programa>> ObtenerTodos()
         {
             return await contexto.Programas
                 .Where(programa => programa.prog_activo == 1)
-                .Select(programa => new Programa(
+                .Select(programa => new Universidad.Dominio.Entidades.Programa(
                     programa.prog_id,
                     programa.prog_nombre!,
                     programa.prog_total_creditos ?? 0))
                 .ToListAsync();
         }
 
-        public async Task<Programa?> ObtenerPorId(int id)
+        public async Task<Universidad.Dominio.Entidades.Programa?> ObtenerPorId(int id)
         {
             return await contexto.Programas
                 .Where(programa => programa.prog_id == id && programa.prog_activo == 1)
-                .Select(programa => new Programa(
+                .Select(programa => new Universidad.Dominio.Entidades.Programa(
                     programa.prog_id,
                     programa.prog_nombre!,
                     programa.prog_total_creditos ?? 0))

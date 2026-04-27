@@ -237,8 +237,6 @@ public partial class UniversidadContexto : DbContext
         {
             entity.HasKey(e => e.usu_id).HasName("PRIMARY");
 
-            entity.HasIndex(e => e.usu_identificacion, "usu_identificacion").IsUnique();
-
             entity.HasIndex(e => e.usu_usuario, "usu_usuario").IsUnique();
 
             entity.Property(e => e.usu_id).HasColumnType("int(11)");
@@ -247,12 +245,8 @@ public partial class UniversidadContexto : DbContext
                 .HasColumnType("smallint(1)");
             entity.Property(e => e.usu_clave).HasMaxLength(100);
             entity.Property(e => e.usu_identificacion).HasMaxLength(30);
+            entity.Property(e => e.usu_rol).HasMaxLength(45);
             entity.Property(e => e.usu_usuario).HasMaxLength(100);
-
-            entity.HasOne(d => d.usu_identificacionNavigation).WithOne(p => p.Usuario)
-                .HasPrincipalKey<Estudiante>(p => p.est_identificacion)
-                .HasForeignKey<Usuario>(d => d.usu_identificacion)
-                .HasConstraintName("fk_Usuario_Estudiante");
         });
 
         OnModelCreatingPartial(modelBuilder);

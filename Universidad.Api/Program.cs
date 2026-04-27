@@ -15,6 +15,7 @@ builder.Services.AddDbContext<UniversidadContexto>(opciones =>
     opciones.UseMySQL(connectionString: builder.Configuration.GetConnectionString("DefaultConnection")!));
 
 builder.Services.AddScoped<IEstudianteRepositorio, EstudianteRepositorio>();
+builder.Services.AddScoped<IProfesorRepositorio, ProfesorRepositorio>();
 builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
 builder.Services.AddScoped<IMateriaRepositorio, MateriaRepositorio>();
 builder.Services.AddScoped<IProgramaRepositorio, ProgramaRepositorio>();

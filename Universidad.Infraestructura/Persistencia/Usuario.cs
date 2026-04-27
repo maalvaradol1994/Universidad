@@ -15,9 +15,9 @@ public partial class Usuario
 
     public short? usu_activo { get; set; }
 
+    public string usu_rol { get; set; } = null!;
+
     public virtual Estudiante? Estudiante { get; set; }
 
     public virtual Profesore? Profesore { get; set; }
-
-    public virtual Estudiante usu_identificacionNavigation { get; set; } = null!;
 }

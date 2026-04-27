@@ -20,7 +20,8 @@ namespace Universidad.Infraestructura.Repositorios
                     u.usu_usuario, 
                     u.Estudiante!.est_nombre, 
                     u.usu_identificacion, 
-                    u.usu_clave))
+                    u.usu_clave,
+                    u.usu_rol))
                 .FirstOrDefaultAsync();
         }
         async Task<int?> IUsuarioRepositorio.AgregarUsuario(Dominio.Entidades.Usuario usuario)
@@ -31,6 +32,7 @@ namespace Universidad.Infraestructura.Repositorios
                 usu_identificacion = usuario.Identificacion,
                 usu_clave = usuario.Clave,
                 usu_activo = 1,
+                usu_rol = usuario.Rol
             };
 
             await contexto.Usuarios.AddAsync(nuevoUsuario);

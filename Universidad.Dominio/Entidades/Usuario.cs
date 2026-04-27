@@ -14,6 +14,7 @@ namespace Universidad.Dominio.Entidades
         public string Nombre { get; private set; }
         public string Identificacion { get; private set; }
         public string Clave { get; private set; }
+        public string Rol { get; private set; }
         public int Activo { get; private set; }
         protected Usuario()
         {
@@ -22,14 +23,15 @@ namespace Universidad.Dominio.Entidades
             Identificacion = null!;
             Clave = null!;
             Activo = 1;
-        
+            Rol = null!;       
         }
-        public Usuario(string nombreUsuario, string nombre, string identificacion, string clave)
+        public Usuario(string nombreUsuario, string nombre, string identificacion, string clave, string rol)
         {
             NombreUsuario = nombreUsuario;
             Nombre = nombre;
             Identificacion = identificacion;
             Clave = clave;
+            Rol = rol;
         }
     }
 

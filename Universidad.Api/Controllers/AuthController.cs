@@ -16,7 +16,7 @@ namespace Universidad.Api.Controllers;
 public class AuthController(IConfiguration configuracion, IUsuarioRepositorio usuarioRepositorio) : ControllerBase
 {
     public record LoginRequest(string Usuario, string Password);
-    public record RegisterRequest(string Nombre, string Correo, string Password, string Identificacion);
+    public record RegisterRequest(string Nombre, string Correo, string Password, string Identificacion, string Rol);
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request, [FromServices] IEstudianteRepositorio repositorioEstudiantes)
@@ -25,7 +25,7 @@ public class AuthController(IConfiguration configuracion, IUsuarioRepositorio us
 
         if (usuario != null && usuario.Clave == request.Password)
         {
-            string token = GenerarToken(usuario.NombreUsuario, "Estudiante", usuario.NombreUsuario);
+            string token = GenerarToken(usuario.NombreUsuario, usuario.Rol, usuario.NombreUsuario);
             return Ok(new { Token = token });
         }
 
@@ -45,7 +45,7 @@ public class AuthController(IConfiguration configuracion, IUsuarioRepositorio us
             return Conflict(new { Error = "Ya existe un usuario registrado con ese correo" });
         }
 
-        RegistrarEstudianteComando comando = new(request.Nombre, request.Correo, request.Password, request.Identificacion);
+        RegistrarEstudianteComando comando = new(request.Nombre, request.Correo, request.Password, request.Identificacion, request.Rol);
         int estudianteId = await mediator.Send(comando);
 
         RespuestaGeneral<int> respuesta = new()

@@ -16,7 +16,7 @@ namespace Universidad.Api.Controllers;
 public class EstudiantesController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
-    [Authorize(Roles = "Profesor")]
+    [Authorize(Roles = "Profesor,Estudiante")]
     public async Task<IActionResult> Registrar(RegistrarEstudianteComando comando)
     {
         int estudianteId = await mediator.Send(comando);
@@ -70,7 +70,7 @@ public class EstudiantesController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost("{id}/materias")]
-    [Authorize(Roles = "Estudiante")]
+    [Authorize(Roles = "Profesor,Estudiante")]
     public async Task<IActionResult> InscribirMaterias(int id, [FromBody] List<int> materiasIds)
     {
         InscribirMateriasComando comando = new(id, materiasIds);
