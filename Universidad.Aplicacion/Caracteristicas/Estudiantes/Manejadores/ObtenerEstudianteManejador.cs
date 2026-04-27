@@ -1,0 +1,31 @@
+﻿using MediatR;
+using Universidad.Aplicacion.Caracteristicas.Estudiantes.Consultas;
+using Universidad.Aplicacion.Caracteristicas.Estudiantes.DTOS;
+using Universidad.Aplicacion.Caracteristicas.Materias.DTOS;
+using Universidad.Dominio.Entidades;
+using Universidad.Dominio.Excepciones;
+using Universidad.Dominio.Repositorios;
+
+namespace Universidad.Aplicacion.Caracteristicas.Estudiantes.Manejadores
+{
+    public class ObtenerEstudianteManejador(IEstudianteRepositorio estudianteRepositorio): IRequestHandler<ObtenerEstudiantePorIdQuery, EstudianteDto>
+    {
+        public async Task<EstudianteDto> Handle(ObtenerEstudiantePorIdQuery request, CancellationToken cancellationToken)
+        {
+            // 1. Buscamos la entidad en la base de datos
+            Estudiante? estudiante = await estudianteRepositorio.ObtenerEstudiantePorId(request.Id) ?? throw new ReglaNegocioExcepcion($"No se encontró ningún estudiante con el ID {request.Id}.");
+
+            // 2. Mapeamos las materias a DTOs puros
+            List<MateriaDto> materiasDto = [.. estudiante.MateriasInscritas.Select(m => new MateriaDto(m.Id, m.Nombre, m.Creditos))];
+
+            // 3. Retornamos el EstudianteDto seguro
+            return new EstudianteDto(
+                estudiante.Id,
+                estudiante.Nombre,
+                estudiante.Correo,
+                estudiante.CreditosDisponibles,
+                materiasDto
+            );
+        }
+    }
+}
