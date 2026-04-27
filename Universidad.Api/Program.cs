@@ -17,6 +17,7 @@ builder.Services.AddDbContext<UniversidadContexto>(opciones =>
 builder.Services.AddScoped<IEstudianteRepositorio, EstudianteRepositorio>();
 builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
 builder.Services.AddScoped<IMateriaRepositorio, MateriaRepositorio>();
+builder.Services.AddScoped<IProgramaRepositorio, ProgramaRepositorio>();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(RegistrarEstudianteComando).Assembly));
 
 builder.Services.AddExceptionHandler<ManejadorExcepcionesGlobal>();

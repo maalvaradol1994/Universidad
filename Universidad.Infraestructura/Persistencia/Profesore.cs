@@ -13,5 +13,9 @@ public partial class Profesore
 
     public string? prof_identificacion { get; set; }
 
+    public int? prof_usuario_id { get; set; }
+
     public virtual ICollection<Profesor_Materium> Profesor_Materia { get; set; } = new List<Profesor_Materium>();
+
+    public virtual Usuario? prof_usuario { get; set; }
 }

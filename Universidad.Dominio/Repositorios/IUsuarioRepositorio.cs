@@ -10,5 +10,6 @@ namespace Universidad.Dominio.Repositorios
     public interface IUsuarioRepositorio
     {
         Task<Usuario?> ObtenerUsuarioPorNombreUsuario(string nombreUsuario);
+        Task<int?> AgregarUsuario(Usuario usuario);
     }
 }

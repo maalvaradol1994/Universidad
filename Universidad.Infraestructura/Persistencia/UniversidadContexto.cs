@@ -17,6 +17,8 @@ public partial class UniversidadContexto : DbContext
 
     public virtual DbSet<Estudiante_Programa> Estudiante_Programas { get; set; }
 
+    public virtual DbSet<Estudiantes_Por_Materia> Estudiantes_Por_Materias { get; set; }
+
     public virtual DbSet<Materia> Materias { get; set; }
 
     public virtual DbSet<Profesor_Materium> Profesor_Materia { get; set; }
@@ -33,6 +35,10 @@ public partial class UniversidadContexto : DbContext
         {
             entity.HasKey(e => e.est_id).HasName("PRIMARY");
 
+            entity.HasIndex(e => e.est_identificacion, "est_identificacion_UNIQUE").IsUnique();
+
+            entity.HasIndex(e => e.est_usuario_id, "est_usuario_id_UNIQUE").IsUnique();
+
             entity.Property(e => e.est_id).HasColumnType("int(11)");
             entity.Property(e => e.est_activo)
                 .HasDefaultValueSql("'NULL'")
@@ -41,6 +47,14 @@ public partial class UniversidadContexto : DbContext
                 .HasMaxLength(30)
                 .HasDefaultValueSql("'NULL'");
             entity.Property(e => e.est_nombre).HasMaxLength(100);
+            entity.Property(e => e.est_usuario_id)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnType("int(11)");
+
+            entity.HasOne(d => d.est_usuario).WithOne(p => p.Estudiante)
+                .HasForeignKey<Estudiante>(d => d.est_usuario_id)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_Estudiante_Usuario");
         });
 
         modelBuilder.Entity<Estudiante_Materia_Profesor>(entity =>
@@ -49,15 +63,25 @@ public partial class UniversidadContexto : DbContext
 
             entity.ToTable("Estudiante_Materia_Profesor");
 
+            entity.HasIndex(e => e.estmatpr_estudiante_id, "fk_Estudiante_Programa_Estudiante");
+
             entity.HasIndex(e => e.estmatpr_profesor_materia_id, "fk_Estudiante_Programa_profesor");
 
             entity.Property(e => e.estmatpr_id).HasColumnType("int(11)");
             entity.Property(e => e.estmatpr_activo)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnType("smallint(1)");
+            entity.Property(e => e.estmatpr_estudiante_id)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnType("int(11)");
             entity.Property(e => e.estmatpr_profesor_materia_id)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnType("int(11)");
+
+            entity.HasOne(d => d.estmatpr_estudiante).WithMany(p => p.Estudiante_Materia_Profesors)
+                .HasForeignKey(d => d.estmatpr_estudiante_id)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_Estudiante_Programa_Estudiante");
 
             entity.HasOne(d => d.estmatpr_profesor_materia).WithMany(p => p.Estudiante_Materia_Profesors)
                 .HasForeignKey(d => d.estmatpr_profesor_materia_id)
@@ -98,6 +122,26 @@ public partial class UniversidadContexto : DbContext
                 .HasForeignKey(d => d.estprog_programa_id)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_Estudiante_Programa");
+        });
+
+        modelBuilder.Entity<Estudiantes_Por_Materia>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("Estudiantes_Por_Materias");
+
+            entity.Property(e => e.estudiante_nombre).HasMaxLength(100);
+            entity.Property(e => e.id_estudiante).HasColumnType("int(11)");
+            entity.Property(e => e.id_materia).HasColumnType("int(11)");
+            entity.Property(e => e.identificacion)
+                .HasMaxLength(30)
+                .HasDefaultValueSql("'NULL'");
+            entity.Property(e => e.materia)
+                .HasMaxLength(100)
+                .HasDefaultValueSql("'NULL'");
+            entity.Property(e => e.valor_creditos)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnType("smallint(6)");
         });
 
         modelBuilder.Entity<Materia>(entity =>
@@ -153,6 +197,8 @@ public partial class UniversidadContexto : DbContext
         {
             entity.HasKey(e => e.prof_id).HasName("PRIMARY");
 
+            entity.HasIndex(e => e.prof_usuario_id, "prof_usuario_id_UNIQUE").IsUnique();
+
             entity.Property(e => e.prof_id).HasColumnType("int(11)");
             entity.Property(e => e.prof_activo)
                 .HasDefaultValueSql("'NULL'")
@@ -161,6 +207,14 @@ public partial class UniversidadContexto : DbContext
                 .HasMaxLength(30)
                 .HasDefaultValueSql("'NULL'");
             entity.Property(e => e.prof_nombre).HasMaxLength(100);
+            entity.Property(e => e.prof_usuario_id)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnType("int(11)");
+
+            entity.HasOne(d => d.prof_usuario).WithOne(p => p.Profesore)
+                .HasForeignKey<Profesore>(d => d.prof_usuario_id)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_Profesor_Usuario");
         });
 
         modelBuilder.Entity<Programa>(entity =>
@@ -194,6 +248,11 @@ public partial class UniversidadContexto : DbContext
             entity.Property(e => e.usu_clave).HasMaxLength(100);
             entity.Property(e => e.usu_identificacion).HasMaxLength(30);
             entity.Property(e => e.usu_usuario).HasMaxLength(100);
+
+            entity.HasOne(d => d.usu_identificacionNavigation).WithOne(p => p.Usuario)
+                .HasPrincipalKey<Estudiante>(p => p.est_identificacion)
+                .HasForeignKey<Usuario>(d => d.usu_identificacion)
+                .HasConstraintName("fk_Usuario_Estudiante");
         });
 
         OnModelCreatingPartial(modelBuilder);

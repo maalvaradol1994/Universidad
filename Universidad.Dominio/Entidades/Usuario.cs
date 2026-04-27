@@ -11,20 +11,23 @@ namespace Universidad.Dominio.Entidades
     {
         public int Id { get; private set; }
         public string NombreUsuario { get; private set; }
+        public string Nombre { get; private set; }
         public string Identificacion { get; private set; }
         public string Clave { get; private set; }
         public int Activo { get; private set; }
         protected Usuario()
         {
             NombreUsuario = null!;
+            Nombre = null!;
             Identificacion = null!;
             Clave = null!;
             Activo = 1;
         
         }
-        public Usuario(string nombreUsuario, string identificacion, string clave)
+        public Usuario(string nombreUsuario, string nombre, string identificacion, string clave)
         {
             NombreUsuario = nombreUsuario;
+            Nombre = nombre;
             Identificacion = identificacion;
             Clave = clave;
         }

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using Universidad.Api.Compartido.Respuestas;
 using Universidad.Aplicacion.Caracteristicas.Estudiantes.Comandos;
 using Universidad.Aplicacion.Caracteristicas.Estudiantes.Consultas;
@@ -51,8 +52,8 @@ public class EstudiantesController(IMediator mediator) : ControllerBase
     }
 
     [HttpGet]
-    [Authorize(Roles = "Profesor")]
-    public async Task<IActionResult> ObtenerTodos()
+    [Authorize(Roles = "Profesor, Estudiante")]
+    public async Task<IActionResult> ObtenerTodos([FromHeader] HttpRequestHeader header)
     {
         ListarEstudiantesQuery query = new();
         List<EstudianteDto> estudiantes = await mediator.Send(query);
