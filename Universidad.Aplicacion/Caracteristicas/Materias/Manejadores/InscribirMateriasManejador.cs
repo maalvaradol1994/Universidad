@@ -21,8 +21,6 @@ namespace Universidad.Aplicacion.Caracteristicas.Materias.Manejadores
 
             InscribirMaterias(request.Materias, estudiante.Id);
 
-            await estudianteRepositorio.ActualizarEstudiante(estudiante);
-
             return true;
         }
 

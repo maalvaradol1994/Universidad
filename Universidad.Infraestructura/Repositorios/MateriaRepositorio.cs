@@ -53,25 +53,37 @@ namespace Universidad.Infraestructura.Repositorios
         {
             if (materias == null || !materias.Any()) return false;
 
-            List<Estudiante_Materia_Profesor> materiasAInscribir = new();
+            List<Estudiante_Materia_Profesor> materiasAInscribir = [];
 
             foreach (var materia in materias)
             {
+                // 1. Buscamos el ID de la relación
                 int idMateriaProfesor = await contexto.Profesor_Materia
-                    .Where(pm => pm.profmat_profesor_id == materia.ProfesorId)
+                    .Where(pm => pm.profmat_profesor_id == materia.ProfesorId && pm.profmat_materia_id == materia.Id)
                     .Select(pm => pm.profmat_id)
                     .FirstOrDefaultAsync();
 
-                materiasAInscribir.Add(new Estudiante_Materia_Profesor()
+                if (idMateriaProfesor == 0)
+                {
+                    throw new Exception($"La materia {materia.Id} no está asignada al profesor {materia.ProfesorId}");
+                }
+
+                Estudiante_Materia_Profesor materiaEstudiante = new Estudiante_Materia_Profesor()
                 {
                     estmatpr_profesor_materia_id = idMateriaProfesor,
                     estmatpr_estudiante_id = estudianteId,
                     estmatpr_activo = 1
-                });
+                };
+
+                materiasAInscribir.Add(materiaEstudiante);
             }
 
-            contexto.Estudiante_Materia_Profesors.AddRange(materiasAInscribir);
-            await contexto.SaveChangesAsync();
+            if (materiasAInscribir.Any())
+            {
+                await contexto.Estudiante_Materia_Profesors.AddRangeAsync(materiasAInscribir);
+                await contexto.SaveChangesAsync();
+            }
+
             return true;
         }
 
