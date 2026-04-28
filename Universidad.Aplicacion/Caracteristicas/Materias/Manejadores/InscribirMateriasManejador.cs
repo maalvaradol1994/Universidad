@@ -19,12 +19,54 @@ namespace Universidad.Aplicacion.Caracteristicas.Materias.Manejadores
 
             ValidarMateriasSoloUnProfesor(request.Materias);
 
-            estudiante!.InscribirMaterias(request.Materias);
+            InscribirMaterias(request.Materias, estudiante.Id);
 
-            // 4. Guardar los cambios
             await estudianteRepositorio.ActualizarEstudiante(estudiante);
 
             return true;
+        }
+
+        public void InscribirMaterias(List<Materia> materiasAInscribir, int estudianteId)
+        {
+            ValidarCantidadMaterias(materiasAInscribir);
+            ValidarProfesoresDiferentes(materiasAInscribir);
+            ValidarCreditosSuficientes(materiasAInscribir);
+            materiaRepositorio.GuardarMaterias(materiasAInscribir, estudianteId);
+        }
+
+        private static void ValidarCantidadMaterias(List<Materia> materias)
+        {
+            const int CantidadMaximaMaterias = 3;
+
+            if (materias.Count > CantidadMaximaMaterias)
+            {
+                throw new ReglaNegocioExcepcion($"El estudiante debe seleccionar máximo {CantidadMaximaMaterias} materias.");
+            }
+
+            if (materias.Count == 0)
+            {
+                throw new ReglaNegocioExcepcion($"El estudiante debe seleccionar al menos 1 materia.");
+            }
+        }
+
+        private static void ValidarProfesoresDiferentes(List<Materia> materias)
+        {
+            IEnumerable<int> profesoresIds = materias.Select(materia => materia.ProfesorId).Distinct();
+
+            if (profesoresIds.Count() != materias.Count)
+            {
+                throw new ReglaNegocioExcepcion("No puedes seleccionar materias dictadas por el mismo profesor.");
+            }
+        }
+
+        private static void ValidarCreditosSuficientes(List<Materia> materias)
+        {
+            int creditosRequeridos = materias.Sum(materia => materia.Creditos);
+
+            if (creditosRequeridos > 9)
+            {
+                throw new ReglaNegocioExcepcion($"Créditos insuficientes. Necesitas {creditosRequeridos} créditos, pero solo tienes {9} disponibles.");
+            }
         }
 
         private static void ValidarEstudianteExiste(Estudiante? estudiante)

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Universidad.Api.Compartido.Respuestas;
 using Universidad.Aplicacion.Caracteristicas.Estudiantes.Consultas;
 using Universidad.Aplicacion.Caracteristicas.Estudiantes.DTOS;
@@ -46,6 +47,28 @@ public class MateriasController(IMediator mediator) : ControllerBase
             Exitoso = true,
             Mensaje = "Lista de compañeros obtenida",
             Resultado = companeros,
+            StatusCode = StatusCodes.Status200OK
+        };
+
+        return Ok(respuesta);
+    }
+
+    [HttpGet("usuario")]
+    [Authorize(Roles = "Estudiante")]
+    public async Task<IActionResult> ConsultarMateriasEstudiante()
+    {
+        string? nombreUsuario = User.FindFirst("sub")?.Value
+                      ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                      ?? User.Identity?.Name;
+
+        ListarMateriaPorUsuarioQuery query = new(nombreUsuario);
+        List<MateriaDto> materias = await mediator.Send(query);
+
+        RespuestaGeneral<List<MateriaDto>> respuesta = new()
+        {
+            Exitoso = true,
+            Mensaje = "Materias consultadas correctamente",
+            Resultado = materias,
             StatusCode = StatusCodes.Status200OK
         };
 
