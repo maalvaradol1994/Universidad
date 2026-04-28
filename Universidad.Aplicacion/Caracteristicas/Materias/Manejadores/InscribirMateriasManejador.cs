@@ -87,7 +87,11 @@ namespace Universidad.Aplicacion.Caracteristicas.Materias.Manejadores
 
         private static void ValidarMateriasSoloUnProfesor(List<Materia> materias)
         {
-            if (materias.Select(x => x.ProfesorId).Count() > 1)
+            // Agrupamos por Id de profesor y vemos si algún grupo tiene más de 1 elemento
+            bool tieneRepetidos = materias.GroupBy(x => x.ProfesorId)
+                                          .Any(grupo => grupo.Count() > 1);
+
+            if (tieneRepetidos)
             {
                 throw new ReglaNegocioExcepcion("No se pueden inscribir materias con el mismo profesor.");
             }
