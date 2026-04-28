@@ -10,16 +10,16 @@ namespace Universidad.Aplicacion.Caracteristicas.Materias.Manejadores
     {
         public async Task<bool> Handle(InscribirMateriasComando request, CancellationToken cancellationToken)
         {
-            // 1. Obtener el estudiante
-            Estudiante? estudiante = await estudianteRepositorio.ObtenerEstudiantePorId(request.EstudianteId);
+
+            Estudiante? estudiante = await estudianteRepositorio.ObtenerEstudiantePorNombreUsuario(request.Usuario);
             ValidarEstudianteExiste(estudiante);
 
-            // 2. Obtener las materias reales desde la base de datos
-            List<Materia> materiasSeleccionadas = await materiaRepositorio.ObtenerMateriaPorId(request.MateriasIds);
-            ValidarMateriasSolicitadasExisten(materiasSeleccionadas, request.MateriasIds);
+            List<Materia> materiasDisponibles = await materiaRepositorio.ObtenerMateriasDisponiblesIncribir(request.Materias, estudiante!.Id);
+            ValidarMateriasSolicitadasExisten(materiasDisponibles, request.Materias);
 
-            // 3. El momento clave: Delegamos la lógica al Dominio. 
-            estudiante!.InscribirMaterias(materiasSeleccionadas);
+            ValidarMateriasSoloUnProfesor(request.Materias);
+
+            estudiante!.InscribirMaterias(request.Materias);
 
             // 4. Guardar los cambios
             await estudianteRepositorio.ActualizarEstudiante(estudiante);
@@ -35,11 +35,19 @@ namespace Universidad.Aplicacion.Caracteristicas.Materias.Manejadores
             }
         }
 
-        private static void ValidarMateriasSolicitadasExisten(List<Materia> materiasEncontradas, List<int> idsSolicitados)
+        private static void ValidarMateriasSolicitadasExisten(List<Materia> materiasEncontradas, List<Materia> idsSolicitados)
         {
             if (materiasEncontradas.Count != idsSolicitados.Count)
             {
                 throw new ReglaNegocioExcepcion("Una o más materias seleccionadas no existen o no están disponibles.");
+            }
+        }
+
+        private static void ValidarMateriasSoloUnProfesor(List<Materia> materias)
+        {
+            if (materias.Select(x => x.ProfesorId).Count() > 1)
+            {
+                throw new ReglaNegocioExcepcion("No se pueden inscribir materias con el mismo profesor.");
             }
         }
     }

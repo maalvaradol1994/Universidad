@@ -2,11 +2,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Security.Claims;
 using Universidad.Api.Compartido.Respuestas;
 using Universidad.Aplicacion.Caracteristicas.Estudiantes.Comandos;
 using Universidad.Aplicacion.Caracteristicas.Estudiantes.Consultas;
 using Universidad.Aplicacion.Caracteristicas.Estudiantes.DTOS;
 using Universidad.Aplicacion.Caracteristicas.Materias.Comandos;
+using Universidad.Aplicacion.Caracteristicas.Materias.DTOS;
+using Universidad.Dominio.Entidades;
 
 namespace Universidad.Api.Controllers;
 
@@ -69,11 +72,17 @@ public class EstudiantesController(IMediator mediator) : ControllerBase
         return Ok(respuesta);
     }
 
-    [HttpPost("{id}/materias")]
-    [Authorize(Roles = "Profesor,Estudiante")]
-    public async Task<IActionResult> InscribirMaterias(int id, [FromBody] List<int> materiasIds)
+    [HttpPost("materias")]
+    [Authorize(Roles = "Estudiante")]
+    public async Task<IActionResult> InscribirMaterias([FromBody] List<MateriaDto> materias)
     {
-        InscribirMateriasComando comando = new(id, materiasIds);
+        string? nombreUsuario = User.FindFirst("sub")?.Value
+                          ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                          ?? User.Identity?.Name;
+
+        List<Materia> listaMaterias = [..materias.Select(x => new Materia(x.Id, x.Nombre, x.ProfesorId, x.ProfesorNombre, x.Creditos))];
+
+        InscribirMateriasComando comando = new(nombreUsuario, listaMaterias);
 
         await mediator.Send(comando);
 

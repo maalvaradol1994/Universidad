@@ -11,7 +11,7 @@ public class ListarMateriasManejador(IMateriaRepositorio materiaRepositorio): IR
     public async Task<List<MateriaDto>> Handle(ListarMateriasQuery request, CancellationToken cancellationToken)
     {
         List<Materia> materias = await materiaRepositorio.ObtenerTodas();
-        return [.. materias.Select(m => new MateriaDto(m.Id, m.Nombre, m.Creditos))];
+        return [.. materias.Select(m => new MateriaDto(m.Id, m.Nombre, m.Creditos, m.ProfesorId, m.ProfesorNombre))];
     }
 }
 

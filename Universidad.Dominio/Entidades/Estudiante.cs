@@ -57,9 +57,14 @@ public class Estudiante
     {
         const int CantidadMaximaMaterias = 3;
 
-        if (materias.Count != CantidadMaximaMaterias)
+        if (materias.Count > CantidadMaximaMaterias)
         {
-            throw new ReglaNegocioExcepcion($"El estudiante debe seleccionar exactamente {CantidadMaximaMaterias} materias.");
+            throw new ReglaNegocioExcepcion($"El estudiante debe seleccionar máximo {CantidadMaximaMaterias} materias.");
+        }
+
+        if (materias.Count == 0)
+        {
+            throw new ReglaNegocioExcepcion($"El estudiante debe seleccionar al menos 1 materia.");
         }
     }
 

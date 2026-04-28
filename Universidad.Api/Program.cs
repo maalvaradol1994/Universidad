@@ -5,6 +5,7 @@ using Scalar.AspNetCore;
 using System.Text;
 using Universidad.Api.Excepciones;
 using Universidad.Aplicacion.Caracteristicas.Estudiantes.Comandos;
+using Universidad.Aplicacion.Caracteristicas.Materias.Comandos;
 using Universidad.Dominio.Repositorios;
 using Universidad.Infraestructura.Persistencia;
 using Universidad.Infraestructura.Repositorios;
@@ -19,7 +20,9 @@ builder.Services.AddScoped<IProfesorRepositorio, ProfesorRepositorio>();
 builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
 builder.Services.AddScoped<IMateriaRepositorio, MateriaRepositorio>();
 builder.Services.AddScoped<IProgramaRepositorio, ProgramaRepositorio>();
+
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(RegistrarEstudianteComando).Assembly));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(InscribirMateriasComando).Assembly));
 
 builder.Services.AddExceptionHandler<ManejadorExcepcionesGlobal>();
 builder.Services.AddProblemDetails();

@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using Universidad.Api.Compartido.Respuestas;
 using Universidad.Aplicacion.Caracteristicas.Programas.Comandos;
 using Universidad.Aplicacion.Caracteristicas.Programas.Consultas;
@@ -39,7 +39,9 @@ public class ProgramasController(IMediator mediator) : ControllerBase
     [Authorize(Roles = "Estudiante")]
     public async Task<IActionResult> AsignarPrograma([FromBody] AsignarProgramaRequest request)
     {
-        string? nombreUsuario = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+        string? nombreUsuario = User.FindFirst("sub")?.Value
+                         ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                         ?? User.Identity?.Name;
 
         if (string.IsNullOrWhiteSpace(nombreUsuario))
         {

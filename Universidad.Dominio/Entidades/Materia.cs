@@ -8,18 +8,25 @@ namespace Universidad.Dominio.Entidades
         public string Nombre { get; private set; }
         public int Creditos { get; private set; }
         public int ProfesorId { get; private set; }
+        public string ProfesorNombre { get; private set; }
 
         protected Materia()
         {
+            Id = 0;
             Nombre = null!;
+            Creditos = 0;
+            ProfesorId = 0;
+            ProfesorNombre = null!;
         }
 
-        public Materia(string nombre, int profesorId)
+        public Materia(int id, string nombre, int profesorId, string profesorNombre, int creditos = 3)
         {
+            Id = id;
             ValidarNombre(nombre);
             Nombre = nombre;
             ProfesorId = profesorId;
-            Creditos = 3;
+            ProfesorNombre = profesorNombre;
+            Creditos = creditos;
         }
 
         private static void ValidarNombre(string nombre)
