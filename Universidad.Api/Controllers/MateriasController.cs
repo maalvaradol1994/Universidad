@@ -1,9 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Universidad.Api.Compartido.Respuestas;
 using Universidad.Aplicacion.Caracteristicas.Estudiantes.Consultas;
 using Universidad.Aplicacion.Caracteristicas.Estudiantes.DTOS;
+using Universidad.Aplicacion.Caracteristicas.Materias.Comandos;
 using Universidad.Aplicacion.Caracteristicas.Materias.Consultas;
 using Universidad.Aplicacion.Caracteristicas.Materias.DTOS;
 

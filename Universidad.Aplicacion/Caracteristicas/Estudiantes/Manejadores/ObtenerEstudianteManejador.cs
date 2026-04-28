@@ -12,10 +12,12 @@ namespace Universidad.Aplicacion.Caracteristicas.Estudiantes.Manejadores
     {
         public async Task<EstudianteDto> Handle(ObtenerEstudiantePorIdQuery request, CancellationToken cancellationToken)
         {
+            // 1. Buscamos la entidad en la base de datos
             Estudiante? estudiante = await estudianteRepositorio.ObtenerEstudiantePorId(request.Id) ?? throw new ReglaNegocioExcepcion($"No se encontró ningún estudiante con el ID {request.Id}.");
 
             List<MateriaDto> materiasDto = [.. estudiante.MateriasInscritas.Select(m => new MateriaDto(m.Id, m.Nombre, m.Creditos, m.ProfesorId, m.ProfesorNombre))];
 
+            // 3. Retornamos el EstudianteDto seguro
             return new EstudianteDto(
                 estudiante.Id,
                 estudiante.Nombre,

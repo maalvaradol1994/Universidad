@@ -21,6 +21,7 @@ namespace Universidad.Aplicacion.Caracteristicas.Materias.Manejadores
 
             estudiante!.InscribirMaterias(request.Materias);
 
+            // 4. Guardar los cambios
             await estudianteRepositorio.ActualizarEstudiante(estudiante);
 
             return true;
