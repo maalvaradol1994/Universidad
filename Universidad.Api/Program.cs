@@ -53,12 +53,9 @@ using (IServiceScope scope = app.Services.CreateScope())
     UniversidadContexto contexto = scope.ServiceProvider.GetRequiredService<UniversidadContexto>();
 }
 
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.MapScalarApiReference();
-    app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-}
+app.MapScalarApiReference();
+app.MapOpenApi();
+app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.MapGet("/", () => "OK");
 
