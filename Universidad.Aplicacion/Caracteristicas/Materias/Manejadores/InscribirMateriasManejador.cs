@@ -17,7 +17,8 @@ namespace Universidad.Aplicacion.Caracteristicas.Materias.Manejadores
             List<Materia> materiasDisponibles = await materiaRepositorio.ObtenerMateriasDisponiblesIncribir(request.Materias, estudiante!.Id);
             ValidarMateriasSolicitadasExisten(materiasDisponibles, request.Materias);
 
-            ValidarMateriasSoloUnProfesor(request.Materias);
+            List<Materia> materiasInscritasEstudiante = await materiaRepositorio.ObtenerMateriasEstudiantes(estudiante!.Id);
+            ValidarMateriasSoloUnProfesor(materiasInscritasEstudiante);
 
             InscribirMaterias(request.Materias, estudiante.Id);
 
@@ -77,6 +78,11 @@ namespace Universidad.Aplicacion.Caracteristicas.Materias.Manejadores
 
         private static void ValidarMateriasSolicitadasExisten(List<Materia> materiasEncontradas, List<Materia> idsSolicitados)
         {
+            if (materiasEncontradas.Count >= 3)
+            {
+                throw new ReglaNegocioExcepcion($"El estudiante ya cuenta con 3 matetrias inscritas.");
+            }
+
             if (materiasEncontradas.Count != idsSolicitados.Count)
             {
                 throw new ReglaNegocioExcepcion("Una o más materias seleccionadas no existen o no están disponibles.");

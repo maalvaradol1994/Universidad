@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -16,7 +17,7 @@ namespace Universidad.Api.Controllers;
 public class AuthController(IConfiguration configuracion, IUsuarioRepositorio usuarioRepositorio) : ControllerBase
 {
     public record LoginRequest(string Usuario, string Password);
-    public record RegisterRequest(string Nombre, string Correo, string Password, string Identificacion, string Rol);
+    public record RegisterRequest([Required] string Nombre, [Required] string Correo, [Required] string Password, [Required] string Identificacion, [Required] string Rol);
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request, [FromServices] IEstudianteRepositorio repositorioEstudiantes)

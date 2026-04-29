@@ -36,6 +36,7 @@ namespace Universidad.Infraestructura.Repositorios
         {
             var consulta = await contexto.Estudiante_Materia_Profesors
                 .AsNoTracking()
+                .Include(x => x.estmatpr_profesor_materia!.profmat_materia)
                 .Where(m => m.estmatpr_estudiante_id == estudianteId)
                 .ToListAsync();
 
@@ -58,10 +59,11 @@ namespace Universidad.Infraestructura.Repositorios
             foreach (var materia in materias)
             {
                 // 1. Buscamos el ID de la relación
-                int idMateriaProfesor = await contexto.Profesor_Materia
+                int idMateriaProfesor = contexto.Profesor_Materia
+                    .AsNoTracking()
                     .Where(pm => pm.profmat_profesor_id == materia.ProfesorId && pm.profmat_materia_id == materia.Id)
                     .Select(pm => pm.profmat_id)
-                    .FirstOrDefaultAsync();
+                    .First();
 
                 if (idMateriaProfesor == 0)
                 {
@@ -78,10 +80,10 @@ namespace Universidad.Infraestructura.Repositorios
                 materiasAInscribir.Add(materiaEstudiante);
             }
 
-            if (materiasAInscribir.Any())
+            if (materiasAInscribir.Count > 0)
             {
                 await contexto.Estudiante_Materia_Profesors.AddRangeAsync(materiasAInscribir);
-                await contexto.SaveChangesAsync();
+                contexto.SaveChanges();
             }
 
             return true;
