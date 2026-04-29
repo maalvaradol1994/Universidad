@@ -60,11 +60,6 @@ if (app.Environment.IsDevelopment())
     app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 }
 
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.ListenAnyIP(80);
-});
-
 app.MapGet("/", () => "OK");
 
 app.UseExceptionHandler();
