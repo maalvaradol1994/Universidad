@@ -53,9 +53,9 @@ namespace Universidad.Infraestructura.Repositorios
             await contexto.SaveChangesAsync();
         }
 
-        public async Task ActualizarEstudiante(Universidad.Dominio.Entidades.Estudiante estudiante)
+        public async Task ActualizarEstudiante(Dominio.Entidades.Estudiante estudiante)
         {
-            Universidad.Infraestructura.Persistencia.Estudiante actualizarEstudiante = new()
+            Persistencia.Estudiante actualizarEstudiante = new()
             {
                 est_id = estudiante.Id,
                 est_nombre = estudiante.Nombre,
@@ -66,10 +66,10 @@ namespace Universidad.Infraestructura.Repositorios
             await contexto.SaveChangesAsync();
         }
 
-        public async Task<List<Universidad.Dominio.Entidades.Estudiante>> ObtenerTodos()
+        public async Task<List<Dominio.Entidades.Estudiante>> ObtenerTodos()
         {
             return await contexto.Estudiantes
-                .Select(e => new Universidad.Dominio.Entidades.Estudiante(
+                .Select(e => new Dominio.Entidades.Estudiante(
                     e.est_id,
                     e.est_nombre,
                     string.Empty,
