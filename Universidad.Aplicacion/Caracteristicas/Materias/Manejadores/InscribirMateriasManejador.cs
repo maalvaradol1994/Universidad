@@ -78,7 +78,7 @@ namespace Universidad.Aplicacion.Caracteristicas.Materias.Manejadores
 
         private static void ValidarMateriasSolicitadasExisten(List<Materia> materiasEncontradas, List<Materia> idsSolicitados)
         {
-            if (materiasEncontradas.Count >= 3)
+            if (materiasEncontradas.Count > 3)
             {
                 throw new ReglaNegocioExcepcion($"El estudiante ya cuenta con 3 matetrias inscritas.");
             }
